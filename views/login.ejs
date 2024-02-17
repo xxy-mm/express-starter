@@ -1,30 +1,33 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login</title>
-  </head>
-  <body>
-    <form
-      action="/login"
-      method="post"
-    >
-      <label>
-        username
-        <input
-          name="username"
-          type="text"
-        />
-      </label>
-      <br />
-      <label>
-        password
-        <input
-          name="password"
-          type="password"
-        />
-      </label>
-      <button type="submit">submit</button>
-    </form>
-  </body>
-</html>
+<%- include('./layout/header') %>
+<%- include('getClass') %>
+
+<% 
+var emailClass = getClass('email')
+var passwordClass = getClass('password')
+%>
+
+
+<nav class="navbar navbar-light bg-light mb-3">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1">Login</span>
+  </div>
+</nav>
+<form action="/login" method="post" class="container">
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" required value="<%= values.email %>" class="form-control <%= emailClass.input %>" id="email" aria-describedby="email" name="email">
+    <div id="email-help" class="form-text <%= emailClass.feedback %>"><%= errors.email %></div>
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="text" class="form-control <%= passwordClass.input %>" id="password" name="password" required value="<%= values.password %>">
+    <div class="form-text <%= passwordClass.feedback %>"><%= errors.password %></div>
+    <div id="password-help" class="form-text">Doesn't have an account yet? <a href="/register">register here.</a></div>
+
+  </div>
+
+  <input type="hidden" name="token" value="<%= values.token %>">
+  <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+<%- include('layout/footer.ejs') %>

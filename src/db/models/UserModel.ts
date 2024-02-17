@@ -1,24 +1,26 @@
 import mongoose from 'mongoose'
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  username: String,
+  email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true,
   },
-  age: {
-    type: Number,
-    default: 18
-  },
-  gender: {
+  password: {
     type: String,
-    enum: ['male', 'female', 'unknown'],
-    default: 'unknown'
+    required: true,
   },
   isDeleted: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: new Date(),
+  },
+  updatedAt: Date,
 })
 const UserModel = mongoose.model('users', UserSchema)
 
