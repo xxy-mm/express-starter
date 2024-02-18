@@ -1,14 +1,14 @@
-import { MD5 } from 'crypto-js'
 import express from 'express'
-import UserModel from '../db/models/UserModel'
+import { createUser } from '../db/models/UserModel'
 import {
   checkEmail,
   checkEmailAvailable,
-  checkPassword,
+  checkLength,
   checkSessionToken,
 } from '../middlewares/checkFormFields'
 import PageFormData from '../models/pageFormData'
 import randomToken from '../utils/randomToken'
+import { setFormToken } from '../utils/setFormToken'
 
 const router = express.Router()
 
@@ -21,35 +21,31 @@ router.get('/', (req, res) => {
 
 router.post(
   '/',
-  checkSessionToken,
-  checkEmail,
-  checkPassword,
-  checkEmailAvailable,
+  checkSessionToken('token'),
+  checkEmail('email'),
+  checkLength('password'),
+  checkEmailAvailable('email'),
   async (req, res) => {
     let { email, password } = req.body
     const form = req.session!.form as PageFormData
 
     if (form.hasError) {
-      const token = randomToken()
-      req.session!.token = token
-      form.values.token = token
+      // form has errors, generate new token, and resend the form.
+      setFormToken(req, form)
       return res.render('register', form)
     }
-    password = MD5(password)
-    UserModel.create({
-      email,
-      password,
-    })
+
+    createUser({ email, password })
       .then(() => {
+        // form submitted, remove form token from session since we won't send the form anymore.
         req.session!.token = null
       })
       .then(() => {
-        req.session!.email = email
-        req.session!.password = password
+        // redirect to homepage
         res.redirect('/')
       })
       .catch((err) => {
-        res.status(500).render('500', { errors: err })
+        res.status(500).render('error', err)
       })
   },
 )

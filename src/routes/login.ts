@@ -2,29 +2,27 @@ import { Router } from 'express'
 
 import {
   checkEmail,
-  checkPassword,
+  checkLength,
   checkSessionToken,
   checkUserExists,
 } from '../middlewares/checkFormFields'
 import PageFormData from '../models/pageFormData'
-import randomToken from '../utils/randomToken'
 import { setFormToken } from '../utils/setFormToken'
 
 const router = Router()
 
 router.get('/', (req, res, next) => {
-  const token = randomToken()
-  const form = new PageFormData({ token })
-  req.session!.token = token
+  const form = new PageFormData({})
+  setFormToken(req, form)
   res.render('login', form)
 })
 
 router.post(
   '/',
-  checkSessionToken,
-  checkEmail,
-  checkPassword,
-  checkUserExists,
+  checkSessionToken('token'),
+  checkEmail('email'),
+  checkLength('password', { min: 6, max: 20 }),
+  checkUserExists('email'),
   async (req, res) => {
     const form: PageFormData = req.session!.form
     if (form.hasError) {
@@ -32,7 +30,9 @@ router.post(
       res.render('login', form)
       return
     }
-    res.send('home page')
+    // since we've already set session.user in the checkUserExists middleware, we don't need to set again here.
+    // setUserSession(...)
+    res.redirect('/')
   },
 )
 

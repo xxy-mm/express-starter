@@ -1,15 +1,28 @@
 import { NextFunction, Request, Response } from 'express'
 import UserModel from '../db/models/UserModel'
 
-async function checkLogin(req: Request, res: Response, next: NextFunction) {
-  const email = req.session?.email
-  const password = req.session?.password
-  const user = await UserModel.findOne({ email, password }).exec()
-  if (!user) {
-    res.status(403).redirect('login')
-    return
+const checkLogin =
+  (checkFn: (...args: any) => any) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await checkFn(req, res, next)
+    if (!result) {
+      res.status(403).redirect('/login')
+      return
+    }
+    next()
   }
-  next()
+
+async function checkLoginFn(req: Request) {
+  req.session!.user = req.session?.user ?? {}
+  const { email, password } = req.session?.user
+
+  let user: unknown
+
+  return (
+    email != null &&
+    password != null &&
+    (user = await UserModel.findOne({ email, password }).exec()) != null
+  )
 }
 
-export default checkLogin
+export default checkLogin(checkLoginFn)
