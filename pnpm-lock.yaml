@@ -29,9 +29,6 @@ dependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
-  lodash:
-    specifier: ^4.17.21
-    version: 4.17.21
   mongoose:
     specifier: ^8.1.2
     version: 8.1.2
@@ -49,9 +46,6 @@ devDependencies:
   '@types/express':
     specifier: ^4.17.21
     version: 4.17.21
-  '@types/lodash':
-    specifier: ^4.14.202
-    version: 4.14.202
   '@types/node':
     specifier: ^20.11.17
     version: 20.11.17
@@ -135,10 +129,6 @@ packages:
 
   /@types/keygrip@1.0.6:
     resolution: {integrity: sha512-lZuNAY9xeJt7Bx4t4dx0rYCDqGPW8RXhQZK1td7d4H6E9zYbLoOtjBvfwdTKpsyxQI/2jv+armjX/RW+ZNpXOQ==}
-    dev: true
-
-  /@types/lodash@4.14.202:
-    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/mime@1.3.5:
@@ -680,6 +670,7 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
 
   /media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
