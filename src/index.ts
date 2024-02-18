@@ -10,11 +10,12 @@ import {
   staticProvider,
   urlencodedParser,
 } from './middlewares'
-import { resetSessionForm } from './middlewares/resetSessionForm'
+import checkLogin from './middlewares/checkLogin'
+import sessionForm from './middlewares/resetSessionForm'
+import accountsRouter from './routes/accounts'
 import loginRouter from './routes/login'
 import registerRouter from './routes/register'
 import rootRouter from './routes/root'
-
 const app = express()
 
 // views
@@ -27,17 +28,18 @@ app.use(checkRefererMiddleware)
 app.use(jsonParser)
 app.use(urlencodedParser)
 app.use(session)
-app.use(resetSessionForm)
+app.use(sessionForm)
 
 // routes
+app.use('/', rootRouter)
 app.use('/login', loginRouter)
 app.use('/register', registerRouter)
-app.use('/', rootRouter)
+app.use('/accounts', checkLogin, accountsRouter)
 
 // global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
-    return console.error(err)
+    res.status(500).render('error', err)
   }
   next()
 })

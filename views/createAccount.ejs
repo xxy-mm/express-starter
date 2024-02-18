@@ -1,0 +1,38 @@
+<%- include('./layout/header') %>
+
+<% 
+var createdAtClass = getClass('createdAt')
+var amountClass = getClass('amount')
+var detailsClass = getClass('details')
+%>
+
+
+<nav class="navbar navbar-light bg-light mb-3">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1">Create Account</span>
+  </div>
+</nav>
+
+<form action="/accounts" method="post" class="container">
+
+  <div class="mb-3">
+    <label for="createdAt" class="form-label">Date</label>
+    <input type="date" required value="<%= values.createdAt %>" class="form-control <%= createdAtClass.input %>" id="createdAt" aria-describedby="createdAt" name="createdAt">
+    <div id="createdAt-help" class="form-text <%= createdAtClass.feedback %>"><%= errors.createdAt %></div>
+  </div>
+  <div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <input type="number" step="0.01" required value="<%= values.amount %>" class="form-control <%= amountClass.input %>" id="amount" aria-describedby="amount" name="amount">
+    <div id="amount-help" class="form-text <%= amountClass.feedback %>"><%= errors.amount %></div>
+  </div>
+  <div class="mb-3">
+    <label for="details" class="form-label">Details</label>
+    <textarea type="text" class="form-control <%= detailsClass.input %>" id="details" name="details" required><%= values.details %></textarea>
+    <div class="form-text <%= detailsClass.feedback %>"><%= errors.details %></div>
+  </div>
+
+  <input type="hidden" name="token" value="<%= values.token %>">
+  <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<%- include('layout/footer.ejs') %>
