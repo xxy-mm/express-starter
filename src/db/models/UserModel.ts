@@ -78,15 +78,14 @@ interface ICheckUserPasswordArgs {
   email: string
   password: string
 }
-export const checkUserPassword = async ({
+export const checkUserLogin = async ({
   email,
   password,
 }: ICheckUserPasswordArgs) => {
   password = MD5(password).toString()
   const found = await UserModel.findOne({ email, password })
-    .select('email password')
-    .lean()
+    .select('_id password')
     .exec()
-  return found
+  return found && { _id: found._id.toString(), password: found.password }
 }
 export default UserModel

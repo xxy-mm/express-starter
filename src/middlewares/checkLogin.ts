@@ -14,14 +14,14 @@ const checkLogin =
 
 async function checkLoginFn(req: Request) {
   req.session!.user = req.session?.user ?? {}
-  const { email, password } = req.session?.user
+  const { password, _id } = req.session?.user
 
   let user: unknown
 
   return (
-    email != null &&
+    _id != null &&
     password != null &&
-    (user = await UserModel.findOne({ email, password }).exec()) != null
+    (user = await UserModel.findOne({ _id, password }).exec()) != null
   )
 }
 

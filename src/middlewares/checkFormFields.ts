@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { isDate, isEmail, isEmpty, isLength } from 'validator'
-import { checkUserPassword, findUserByEmail } from '../db/models/UserModel'
+import { checkUserLogin, findUserByEmail } from '../db/models/UserModel'
 import PageFormData from '../models/pageFormData'
 import { setUserSession } from '../utils/setUserSession'
 
@@ -44,7 +44,7 @@ export const checkNotEmpty = checkFormField(
 )
 
 export const checkUserExists = checkFormField(async (req) => {
-  const user = await checkUserPassword({
+  const user = await checkUserLogin({
     email: req.body.email,
     password: req.body.password,
   })

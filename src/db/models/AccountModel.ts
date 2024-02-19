@@ -30,7 +30,7 @@ const accountSchema = new mongoose.Schema({
 const AccountModel = mongoose.model('account', accountSchema)
 
 interface IAccount {
-  email: string
+  user: string
   createdAt: Date
   amount: number
   details: string
