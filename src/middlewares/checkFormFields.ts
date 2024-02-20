@@ -66,7 +66,7 @@ export const checkEmail = checkFormField(
  * if not, store the state in session, and continue executing next handler.
  */
 export const checkEmailAvailable = checkFormField(async (req, email) => {
-  const found = findUserByEmail(email)
+  const found = await findUserByEmail(email)
   return found == null
 }, 'Email already in use')
 
