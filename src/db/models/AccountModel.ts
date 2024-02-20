@@ -8,7 +8,7 @@ const accountSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now, // using Date.now, not Date.now()
+    required: true,
   },
   amount: {
     type: Number,
@@ -21,6 +21,7 @@ const accountSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
+    default: Date.now, // using Date.now, not Date.now()
   },
   updatedAt: {
     type: Date,
@@ -31,7 +32,7 @@ const AccountModel = mongoose.model('account', accountSchema)
 
 interface IAccount {
   user: string
-  createdAt: Date
+  date: Date
   amount: number
   details: string
 }
@@ -47,13 +48,17 @@ export const deleteAccount = async (_id: string) => {
 }
 
 interface IListAccountArgs {
-  email: string
+  _id: string
   skip: number
   limit: number
 }
 
-export const listAccount = async ({ email, skip, limit }: IListAccountArgs) => {
-  return await AccountModel.find({ email }).skip(skip).limit(limit).lean()
+export const listAccount = async ({ _id, skip, limit }: IListAccountArgs) => {
+  return await AccountModel.find({ user: _id })
+    .skip(skip)
+    .limit(limit)
+    .sort('createdAt')
+    .lean()
 }
 
 interface IUpdateAccountArgs {
@@ -78,6 +83,10 @@ export const updateAccount = async ({
       new: true,
     },
   ).lean()
+}
+
+export const findAccountById = async (_id: string) => {
+  return AccountModel.findById(_id).lean().exec()
 }
 
 export default AccountModel

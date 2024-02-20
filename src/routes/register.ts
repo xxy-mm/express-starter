@@ -9,6 +9,7 @@ import {
 import PageFormData from '../models/pageFormData'
 import randomToken from '../utils/randomToken'
 import { setFormToken } from '../utils/setFormToken'
+import { setUserSession } from '../utils/setUserSession'
 
 const router = express.Router()
 
@@ -36,9 +37,13 @@ router.post(
     }
 
     createUser({ email, password })
-      .then(() => {
+      .then((result) => {
         // form submitted, remove form token from session since we won't send the form anymore.
         req.session!.token = null
+        setUserSession(req, {
+          _id: result._id.toString(),
+          password: result.password,
+        })
       })
       .then(() => {
         // redirect to homepage
