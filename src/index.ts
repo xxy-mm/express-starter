@@ -1,5 +1,5 @@
+import dayjs from 'dayjs'
 import express, { NextFunction, Request, Response } from 'express'
-
 import path from 'path'
 import './config'
 import './db'
@@ -21,6 +21,7 @@ const app = express()
 // views
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '..', 'views'))
+app.locals.dayjs = dayjs
 
 // middlewares
 app.use(staticProvider)
