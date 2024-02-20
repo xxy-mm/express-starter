@@ -86,6 +86,7 @@ export const checkUserLogin = async ({
   const found = await UserModel.findOne({ email, password })
     .select('_id password')
     .exec()
-  return found && { _id: found._id.toString(), password: found.password }
+
+  return found?._id && { _id: found._id.toString(), password: found.password }
 }
 export default UserModel

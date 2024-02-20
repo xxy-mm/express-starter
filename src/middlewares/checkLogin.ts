@@ -16,13 +16,13 @@ async function checkLoginFn(req: Request) {
   req.session!.user = req.session?.user ?? {}
   const { password, _id } = req.session?.user
 
-  let user: unknown
+  if (_id && password) {
+    const found = await UserModel.findOne({ _id, password }).exec()
+    console.log('user', found)
 
-  return (
-    _id != null &&
-    password != null &&
-    (user = await UserModel.findOne({ _id, password }).exec()) != null
-  )
+    return found != null
+  }
+  return false
 }
 
 export default checkLogin(checkLoginFn)

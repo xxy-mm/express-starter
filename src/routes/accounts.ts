@@ -14,9 +14,9 @@ import {
   checkNotEmpty,
   checkSessionToken,
 } from '../middlewares/checkFormFields'
-import PageFormData from '../models/pageFormData'
-import { toFormDate } from '../utils/date'
-import { setFormToken } from '../utils/setFormToken'
+import sessionFormMiddleware from '../middlewares/sessionFormMiddleware'
+import SessionForm from '../models/sessionForm'
+import renderPage from '../utils/renderPage'
 
 const router = Router()
 
@@ -29,19 +29,24 @@ router.get('/', async (req, res) => {
     limit: 10,
   })
 
-  res.render('accountList', { list })
+  renderPage('accountList', { list, title: 'Accounts' })(req, res)
 })
 
 // create
 
-router.get('/new', (req, res) => {
-  const form = new PageFormData({ createdAt: toFormDate(new Date()) }, {})
-  setFormToken(req, form)
-  res.render('createOrUpdateAccount', { form, isNew: true })
+router.get('/new', sessionFormMiddleware, (req, res) => {
+  const form: SessionForm = req.session!.form
+  form.addSessionToken(req.session)
+  renderPage('createOrUpdateAccount', {
+    form,
+    isNew: true,
+    title: 'Add account',
+  })(req, res)
 })
 
 router.post(
   '/new',
+  sessionFormMiddleware,
   checkSessionToken('token'),
   checkNotEmpty('amount'),
   checkNotEmpty('details'),
@@ -51,14 +56,14 @@ router.post(
   checkIsDate('date'),
   checkIsBefore('date'),
   (req, res) => {
-    const form: PageFormData = req.session!.form
+    const form: SessionForm = req.session!.form
     if (form.hasError) {
-      setFormToken(req, form)
-      res.render('createOrUpdateAccount', form)
+      form.addSessionToken(req.session)
+      renderPage('createOrUpdateAccount', { form })(req, res)
       return
     }
     // invalid form token from session
-    req.session!.token = null
+    form.complete(req.session!)
     const { date, amount, details } = req.body
     const user = req.session!.user._id as string
     createAccount({
@@ -67,11 +72,11 @@ router.post(
       amount,
       details,
     })
-      .then((result) => {
+      .then(() => {
         return res.redirect('/accounts')
       })
       .catch((err) => {
-        return res.render('error', err)
+        return res.render('error', { message: err.message })
       })
   },
 )
@@ -84,37 +89,45 @@ router.get('/edit/:id', async (req, res) => {
     return res.render('error', { message: '404 not found' })
   }
 
-  const form = new PageFormData()
-  form.values = {
+  const form = SessionForm.create({
     ...account,
     _id: account._id.toString(),
     user: account.user.toString(),
-  }
-  setFormToken(req, form)
-  res.render('createOrUpdateAccount', { form, isNew: false })
+  }).addSessionToken(req.session)
+
+  renderPage('createOrUpdateAccount', {
+    form,
+    title: 'Edit Account',
+    isNew: false,
+  })(req, res)
 })
 
 router.post(
   '/edit',
+  sessionFormMiddleware,
   checkSessionToken('token'),
   checkNotEmpty('_id'),
   checkIsNumber('amount'),
   checkLength('details', { min: 10, max: 200 }),
   async (req, res) => {
-    const form = req.session!.form
+    const form: SessionForm = req.session!.form
     if (form.hasError) {
-      setFormToken(req, form)
-      res.render('createOrUpdateAccount', { form, isNew: false })
+      form.addSessionToken(req.session)
+      renderPage('createOrUpdateAccount', { form, isNew: false })(req, res)
       return
     }
+    form.complete(req.session)
     const updated = await updateAccount({
       _id: req.body._id,
       amount: req.body.amount,
       details: req.body.details,
-    }).then((result) => {
-      req.session!.token = null
-      res.redirect('/accounts')
     })
+      .then(() => {
+        res.redirect('/accounts')
+      })
+      .catch((error) => {
+        renderPage('error', { message: error.message })(req, res.status(500))
+      })
   },
 )
 // delete
@@ -122,14 +135,17 @@ router.post(
 router.get('/delete/:id', async (req, res) => {
   const deleted = await deleteAccount(req.params.id)
   if (deleted.modifiedCount === 1) {
-    return res.status(200).render('success', {
-      message: 'delete success',
-      backUrl: '/accounts',
-    })
+    renderPage('success', { message: 'delete success', redirect: '/accounts' })(
+      req,
+      res.status(200),
+    )
+    return
   }
-  return res
-    .status(400)
-    .render('error', { message: 'delete failed', backUrl: '/accounts' })
+
+  renderPage('error', { message: 'delete failed', redirect: '/accounts' })(
+    req,
+    res,
+  )
 })
 
 export default router

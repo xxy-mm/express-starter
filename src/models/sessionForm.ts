@@ -1,4 +1,12 @@
-class PageFormData {
+import randomToken from '../utils/randomToken'
+
+class SessionForm {
+  public static create(
+    values: Record<string, any> = {},
+    errors: Record<string, string | undefined> = {},
+  ) {
+    return new SessionForm(values, errors)
+  }
   get hasError() {
     return Object.keys(this.errors).length > 0
   }
@@ -7,6 +15,18 @@ class PageFormData {
     public errors: Record<string, string | undefined> = {},
   ) {}
 
+  addSessionToken(session?: Record<string, any> | null) {
+    if (!session) {
+      throw new Error('no session middleware provided')
+    }
+    const token = randomToken()
+    this.values.token = token
+    session!.token = this.values.token
+    return this
+  }
+  complete(session?: Record<string, any> | null) {
+    session && (session.token = null)
+  }
   getClass = (name: string) => {
     const classes =
       this.errors[name] && this.values[name]
@@ -39,4 +59,4 @@ class PageFormData {
   // }
 }
 
-export default PageFormData
+export default SessionForm

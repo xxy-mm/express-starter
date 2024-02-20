@@ -11,9 +11,9 @@ import {
   urlencodedParser,
 } from './middlewares'
 import checkLogin from './middlewares/checkLogin'
-import sessionForm from './middlewares/resetSessionForm'
 import accountsRouter from './routes/accounts'
 import loginRouter from './routes/login'
+import logoutRouter from './routes/logout'
 import registerRouter from './routes/register'
 import rootRouter from './routes/root'
 const app = express()
@@ -29,11 +29,11 @@ app.use(checkRefererMiddleware)
 app.use(jsonParser)
 app.use(urlencodedParser)
 app.use(session)
-app.use(sessionForm)
 
 // routes
 app.use('/', rootRouter)
 app.use('/login', loginRouter)
+app.use('/logout', logoutRouter)
 app.use('/register', registerRouter)
 app.use('/accounts', checkLogin, accountsRouter)
 

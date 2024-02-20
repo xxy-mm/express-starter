@@ -4,15 +4,9 @@
 var dateClass = form.getClass('date')
 var amountClass = form.getClass('amount')
 var detailsClass = form.getClass('details')
-var actionUrl = isNew?'/accounts':'/accounts/edit/'
+var actionUrl = isNew?'/accounts/new':'/accounts/edit/'
 var actionName = isNew?'Create':'Update'
 %>
-
-<nav class="navbar navbar-light bg-light mb-3">
-  <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1"><%= actionName %> Account</span>
-  </div>
-</nav>
 
 
 <form action="<%= actionUrl %>" method="post" class="container">

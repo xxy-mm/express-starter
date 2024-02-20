@@ -1,7 +1,9 @@
-import { Request } from 'express'
 export const setUserSession = (
-  req: Request,
   user: { _id: string; password: string },
+  session?: Record<string, any> | null,
 ) => {
-  req.session!.user = user
+  if (!session) {
+    throw new Error('no session middleware provided')
+  }
+  session!.user = user
 }

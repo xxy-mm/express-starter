@@ -1,31 +1,27 @@
 <%- include('./layout/header') %>
 
 <% 
-var emailClass = getClass('email')
-var passwordClass = getClass('password')
+var emailClass = form.getClass('email')
+var passwordClass = form.getClass('password')
 %>
 
 
-<nav class="navbar navbar-light bg-light mb-3">
-  <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">Login</span>
-  </div>
-</nav>
+
 <form action="/login" method="post" class="container">
   <div class="mb-3">
     <label for="email" class="form-label">Email</label>
-    <input type="email" required value="<%= values.email %>" class="form-control <%= emailClass.input %>" id="email" aria-describedby="email" name="email">
-    <div id="email-help" class="form-text <%= emailClass.feedback %>"><%= errors.email %></div>
+    <input type="email" required value="<%= form.values.email %>" class="form-control <%= emailClass.input %>" id="email" aria-describedby="email" name="email">
+    <div id="email-help" class="form-text <%= emailClass.feedback %>"><%= form.errors.email %></div>
   </div>
   <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input type="text" class="form-control <%= passwordClass.input %>" id="password" name="password" required value="<%= values.password %>">
-    <div class="form-text <%= passwordClass.feedback %>"><%= errors.password %></div>
+    <input type="text" class="form-control <%= passwordClass.input %>" id="password" name="password" required value="<%= form.values.password %>">
+    <div class="form-text <%= passwordClass.feedback %>"><%= form.errors.password %></div>
     <div id="password-help" class="form-text">Doesn't have an account yet? <a href="/register">register here.</a></div>
 
   </div>
 
-  <input type="hidden" name="token" value="<%= values.token %>">
+  <input type="hidden" name="token" value="<%= form.values.token %>">
   <button type="submit" class="btn btn-primary">Login</button>
 </form>
 

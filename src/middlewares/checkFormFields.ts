@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { isDate, isEmail, isEmpty, isLength } from 'validator'
 import { checkUserLogin, findUserByEmail } from '../db/models/UserModel'
-import PageFormData from '../models/pageFormData'
+import SessionForm from '../models/sessionForm'
 import { setUserSession } from '../utils/setUserSession'
 
 /**
@@ -12,12 +12,12 @@ import { setUserSession } from '../utils/setUserSession'
  */
 export const checkSessionToken = checkFormField(
   async (req, token) => {
-    const sessionToken = req!.session!.token
+    const sessionToken = req.session!.token
     return sessionToken === token
   },
   'invalid token',
   (req, res) => {
-    res.status(400).render('error', { message: 'Invalid form' })
+    res.status(400).render('error', { message: 'Invalid token' })
   },
 )
 
@@ -50,7 +50,7 @@ export const checkUserExists = checkFormField(async (req) => {
   })
   // for now this method is only called as a middleware in the login route.
   // we can set the found/login user into session here to avoid querying for the user information again
-  user && setUserSession(req, user)
+  user && setUserSession(user, req.session)
   return user != null
 }, 'Incorrect email or password')
 
@@ -105,7 +105,7 @@ export function checkFormField<T = string, K = Record<string, any>>(
 }
 
 function setPageFormData(field: string, value: any, errorMsg?: string) {
-  return new PageFormData(
+  return new SessionForm(
     {
       [field]: value,
     },
@@ -117,7 +117,7 @@ function setPageFormData(field: string, value: any, errorMsg?: string) {
   )
 }
 
-function mergePageFormData(object: PageFormData, source: PageFormData) {
+function mergePageFormData(object: SessionForm, source: SessionForm) {
   object.values = { ...object.values, ...source.values }
   object.errors = { ...object.errors, ...source.errors }
   return object

@@ -6,28 +6,28 @@
 </nav>
 
 <% 
-const emailClass = getClass('email')
-const passwordClass = getClass('password')
-const passwordRepeatClass = getClass('passwordRepeat')
+const emailClass = form.getClass('email')
+const passwordClass = form.getClass('password')
+const passwordRepeatClass = form.getClass('passwordRepeat')
 %>
 
 <form action="/register" method="post" class="container" id="js-register-form">
   <div class="mb-3">
     <label for="email" class="form-label">Email</label>
-    <input type="email" value="<%= values.email %>" class="form-control <%= emailClass.input %>" id="email" required aria-describedby="email" name="email">
-    <div class="<%= emailClass.feedback %>"><%= errors.email %></div>
+    <input type="email" value="<%= form.values.email %>" class="form-control <%= emailClass.input %>" id="email" required aria-describedby="email" name="email">
+    <div class="<%= emailClass.feedback %>"><%= form.errors.email %></div>
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
-      <input type="password" value="<%= values.password %>" class="form-control <%=  passwordClass.input %>" id="password" required minlength="6" maxlength="20" name="password">
-      <div class="<%= passwordClass.feedback %>"><%= errors.password %></div>
+      <input type="password" value="<%= form.values.password %>" class="form-control <%=  passwordClass.input %>" id="password" required minlength="6" maxlength="20" name="password">
+      <div class="<%= passwordClass.feedback %>"><%= form.errors.password %></div>
 
     </div>
     <div class="mb-3">
       <label for="password-repeat" class="form-label">Repeat Password</label>
-      <input type="password" value="<%= values.passwordRepeat %>" class="form-control <%= passwordRepeatClass.input %>" id="password-repeat" name="passwordRepeat" required minlength="6" maxlength="20">
-      <div class="<%= passwordRepeatClass.feedback %>"><%= errors.passwordRepeat %></div>
+      <input type="password" value="<%= form.values.passwordRepeat %>" class="form-control <%= passwordRepeatClass.input %>" id="password-repeat" name="passwordRepeat" required minlength="6" maxlength="20">
+      <div class="<%= passwordRepeatClass.feedback %>"><%= form.errors.passwordRepeat %></div>
     </div>
-    <input type="hidden" value="<%= values.token %>" name="token">
+    <input type="hidden" value="<%= form.values.token %>" name="token">
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
 

@@ -6,32 +6,35 @@ import {
   checkSessionToken,
   checkUserExists,
 } from '../middlewares/checkFormFields'
-import PageFormData from '../models/pageFormData'
-import { setFormToken } from '../utils/setFormToken'
+import sessionFormMiddleware from '../middlewares/sessionFormMiddleware'
+import SessionForm from '../models/sessionForm'
+import renderPage from '../utils/renderPage'
 
 const router = Router()
 
-router.get('/', (req, res, next) => {
-  const form = new PageFormData({})
-  setFormToken(req, form)
-  res.render('login', form)
+router.get('/', sessionFormMiddleware, (req, res, next) => {
+  if (req.session?.user?._id) {
+    return res.redirect('/accounts')
+  }
+  const form: SessionForm = req.session!.form
+  form.addSessionToken(req.session)
+  renderPage('login', { form, title: 'Login' })(req, res)
 })
 
 router.post(
   '/',
+  sessionFormMiddleware,
   checkSessionToken('token'),
   checkEmail('email'),
   checkLength('password', { min: 6, max: 20 }),
   checkUserExists('email'),
   async (req, res) => {
-    const form: PageFormData = req.session!.form
+    const form: SessionForm = req.session!.form
     if (form.hasError) {
-      setFormToken(req, form)
-      res.render('login', form)
+      form.addSessionToken(req.session)
+      renderPage('login', { form })(req, res)
       return
     }
-    // since we've already set session.user in the checkUserExists middleware, we don't need to set again here.
-    // setUserSession(...)
     res.redirect('/')
   },
 )

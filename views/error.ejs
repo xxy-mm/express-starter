@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('layout/header.ejs', {title: 'Error'}) %>
+<div class="container">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error</title>
-</head>
-
-<body>
-  <h1><%= message %></h1>
-</body>
-
-</html>
+  <div class="alert alert-primary" role="alert">
+    <%= message %>
+  </div>
+  <a href="<%= redirect %>" class="btn btn-primary">Back</a>
+</div>
+<%- include('layout/footer.ejs') %>
