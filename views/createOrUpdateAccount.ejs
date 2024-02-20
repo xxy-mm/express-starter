@@ -1,0 +1,43 @@
+<%- include('./layout/header') %>
+
+<% 
+var dateClass = form.getClass('date')
+var amountClass = form.getClass('amount')
+var detailsClass = form.getClass('details')
+var actionUrl = isNew?'/accounts':'/accounts/edit/'
+var actionName = isNew?'Create':'Update'
+%>
+
+<nav class="navbar navbar-light bg-light mb-3">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"><%= actionName %> Account</span>
+  </div>
+</nav>
+
+
+<form action="<%= actionUrl %>" method="post" class="container">
+
+  <div class="mb-3">
+    <label for="date" class="form-label">Date</label>
+    <input type="date" required value="<%= dayjs(form.values.date).format('YYYY-MM-DD') %>" class="form-control <%= dateClass.input %>" id="date" aria-describedby="date" name="date">
+    <div id="date-help" class="form-text <%= dateClass.feedback %>"><%= form.errors.date %></div>
+  </div>
+  <div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <input type="number" step="0.01" required value="<%= form.values.amount %>" class="form-control <%= amountClass.input %>" id="amount" aria-describedby="amount" name="amount">
+    <div id="amount-help" class="form-text <%= amountClass.feedback %>"><%= form.errors.amount %></div>
+  </div>
+  <div class="mb-3">
+    <label for="details" class="form-label">Details</label>
+    <textarea type="text" class="form-control <%= detailsClass.input %>" id="details" name="details" required><%= form.values.details %></textarea>
+    <div class="form-text <%= detailsClass.feedback %>"><%= form.errors.details %></div>
+  </div>
+
+  <input type="hidden" name="token" value="<%= form.values.token %>">
+  <% if (!isNew) { %>
+  <input type="hidden" name="_id" value="<%= form.values._id %>">
+  <% } %>
+  <button type="submit" class="btn btn-primary"><%= actionName %></button>
+</form>
+
+<%- include('layout/footer.ejs') %>
