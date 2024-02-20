@@ -1,8 +1,6 @@
 import mongoose from 'mongoose'
 
-const db = mongoose.connect(
-  `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-)
+const db = mongoose.connect(process.env.DB_CONNECTION!)
 
 mongoose.connection.on('open', () => {
   console.log('db connection established')

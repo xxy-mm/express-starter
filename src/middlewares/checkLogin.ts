@@ -18,8 +18,6 @@ async function checkLoginFn(req: Request) {
 
   if (_id && password) {
     const found = await UserModel.findOne({ _id, password }).exec()
-    console.log('user', found)
-
     return found != null
   }
   return false

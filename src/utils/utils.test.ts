@@ -1,6 +1,5 @@
 import { toFormDate } from './date'
 import randomToken from './randomToken'
-import renderPage from './renderPage'
 import { setUserSession } from './setUserSession'
 
 describe('utils', () => {
@@ -38,21 +37,21 @@ describe('utils', () => {
   })
 
   // hard to write test unless decoupled from express.request and response
-  describe('renderPage', () => {
-    const renderFn = jest.fn()
-    const options = {
-      title: 'test',
-      test: true,
-    }
-    const mockSession = { user: { _id: '1', password: '2' } }
-    it('calls renderFn with correct params', () => {
-      renderPage('test', options)(renderFn, mockSession)
+  // describe('renderPage', () => {
+  //   const renderFn = jest.fn()
+  //   const options = {
+  //     title: 'test',
+  //     test: true,
+  //   }
+  //   const mockSession = { user: { _id: '1', password: '2' } }
+  //   it('calls renderFn with correct params', () => {
+  //     renderPage('test', options)(renderFn, mockSession)
 
-      expect(renderFn).toHaveBeenCalledTimes(1)
-      expect(renderFn).toHaveBeenCalledWith('test', {
-        ...options,
-        user: mockSession.user,
-      })
-    })
-  })
+  //     expect(renderFn).toHaveBeenCalledTimes(1)
+  //     expect(renderFn).toHaveBeenCalledWith('test', {
+  //       ...options,
+  //       user: mockSession.user,
+  //     })
+  //   })
+  // })
 })

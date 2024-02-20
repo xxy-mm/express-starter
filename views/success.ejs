@@ -4,9 +4,12 @@
 <div class="container">
 
   <div class="alert alert-primary" role="alert">
-    <%= message %>
+    <%= locals.message %>
   </div>
+  <% if (locals.redirect) { %>
+
   <a href="<%= redirect %>" class="btn btn-primary">Back</a>
+  <% } %>
 </div>
 
 

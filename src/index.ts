@@ -40,7 +40,8 @@ app.use('/accounts', checkLogin, accountsRouter)
 // global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err) {
-    res.status(500).render('error', err)
+    console.log(err)
+    res.status(500).render('error', { message: err.message })
   }
   next()
 })
