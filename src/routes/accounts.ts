@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   createAccount,
+  deleteAccount,
   findAccountById,
   listAccount,
   updateAccount,
@@ -19,6 +20,8 @@ import { setFormToken } from '../utils/setFormToken'
 
 const router = Router()
 
+// list
+
 router.get('/', async (req, res) => {
   const list = await listAccount({
     _id: req.session!.user._id,
@@ -28,6 +31,8 @@ router.get('/', async (req, res) => {
 
   res.render('accountList', { list })
 })
+
+// create
 
 router.get('/new', (req, res) => {
   const form = new PageFormData({ createdAt: toFormDate(new Date()) }, {})
@@ -71,6 +76,8 @@ router.post(
   },
 )
 
+// edit
+
 router.get('/edit/:id', async (req, res) => {
   const account = await findAccountById(req.params.id)
   if (account == null) {
@@ -85,10 +92,6 @@ router.get('/edit/:id', async (req, res) => {
   }
   setFormToken(req, form)
   res.render('createOrUpdateAccount', { form, isNew: false })
-})
-
-router.delete('/:id', (req, res) => {
-  res.send('delete account')
 })
 
 router.post(
@@ -114,5 +117,19 @@ router.post(
     })
   },
 )
+// delete
+
+router.get('/delete/:id', async (req, res) => {
+  const deleted = await deleteAccount(req.params.id)
+  if (deleted.modifiedCount === 1) {
+    return res.status(200).render('success', {
+      message: 'delete success',
+      backUrl: '/accounts',
+    })
+  }
+  return res
+    .status(400)
+    .render('error', { message: 'delete failed', backUrl: '/accounts' })
+})
 
 export default router

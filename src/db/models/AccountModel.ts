@@ -44,6 +44,7 @@ export const deleteAccount = async (_id: string) => {
   return await AccountModel.updateOne(
     { _id },
     { $set: { isDeleted: true, updatedAt: Date.now() } },
+    { new: true },
   )
 }
 
@@ -54,7 +55,7 @@ interface IListAccountArgs {
 }
 
 export const listAccount = async ({ _id, skip, limit }: IListAccountArgs) => {
-  return await AccountModel.find({ user: _id })
+  return await AccountModel.find({ user: _id, isDeleted: false })
     .skip(skip)
     .limit(limit)
     .sort('createdAt')
