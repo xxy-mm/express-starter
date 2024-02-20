@@ -18,7 +18,7 @@ router.get('/', sessionFormMiddleware, (req, res, next) => {
   }
   const form: SessionForm = req.session!.form
   form.addSessionToken(req.session)
-  renderPage('login', { form, title: 'Login' })(res.render, req.session)
+  renderPage('login', { form, title: 'Login' })(req, res)
 })
 
 router.post(
@@ -32,7 +32,7 @@ router.post(
     const form: SessionForm = req.session!.form
     if (form.hasError) {
       form.addSessionToken(req.session)
-      renderPage('login', { form })(res.render, req.session)
+      renderPage('login', { form })(req, res)
       return
     }
     res.redirect('/')
