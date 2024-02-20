@@ -16,7 +16,7 @@ const router = express.Router()
 router.get('/', sessionFormMiddleware, (req, res) => {
   const form: SessionForm = req.session?.form
   form.addSessionToken(req.session)
-  renderPage('register', { form, title: 'Register' })(req, res)
+  renderPage('register', { form, title: 'Register' })(res.render, req.session)
 })
 
 router.post(
@@ -33,7 +33,7 @@ router.post(
     if (form.hasError) {
       // form has errors, generate new token, and resend the form.
       form.addSessionToken(req.session)
-      renderPage('register', { form })(req, res.status(400))
+      renderPage('register', { form })(res.render, req.session)
       return
     }
     // form submitted, remove form token from session since we won't send the form anymore.
@@ -52,7 +52,7 @@ router.post(
         res.redirect('/')
       })
       .catch((err) => {
-        renderPage('error', { message: err.message })(req, res)
+        renderPage('error', { message: err.message })(res.render, req.session)
       })
   },
 )

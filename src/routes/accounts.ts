@@ -29,7 +29,10 @@ router.get('/', async (req, res) => {
     limit: 10,
   })
 
-  renderPage('accountList', { list, title: 'Accounts' })(req, res)
+  renderPage('accountList', { list, title: 'Accounts' })(
+    res.render,
+    req.session,
+  )
 })
 
 // create
@@ -41,7 +44,7 @@ router.get('/new', sessionFormMiddleware, (req, res) => {
     form,
     isNew: true,
     title: 'Add account',
-  })(req, res)
+  })(res.render, req.session)
 })
 
 router.post(
@@ -59,7 +62,7 @@ router.post(
     const form: SessionForm = req.session!.form
     if (form.hasError) {
       form.addSessionToken(req.session)
-      renderPage('createOrUpdateAccount', { form })(req, res)
+      renderPage('createOrUpdateAccount', { form })(res.render, req.session)
       return
     }
     // invalid form token from session
@@ -99,7 +102,7 @@ router.get('/edit/:id', async (req, res) => {
     form,
     title: 'Edit Account',
     isNew: false,
-  })(req, res)
+  })(res.render, req.session)
 })
 
 router.post(
@@ -113,7 +116,10 @@ router.post(
     const form: SessionForm = req.session!.form
     if (form.hasError) {
       form.addSessionToken(req.session)
-      renderPage('createOrUpdateAccount', { form, isNew: false })(req, res)
+      renderPage('createOrUpdateAccount', { form, isNew: false })(
+        res.render,
+        req.session,
+      )
       return
     }
     form.complete(req.session)
@@ -126,7 +132,7 @@ router.post(
         res.redirect('/accounts')
       })
       .catch((error) => {
-        renderPage('error', { message: error.message })(req, res.status(500))
+        renderPage('error', { message: error.message })(res.render, req.session)
       })
   },
 )
@@ -136,15 +142,15 @@ router.get('/delete/:id', async (req, res) => {
   const deleted = await deleteAccount(req.params.id)
   if (deleted.modifiedCount === 1) {
     renderPage('success', { message: 'delete success', redirect: '/accounts' })(
-      req,
-      res.status(200),
+      res.render,
+      req.session,
     )
     return
   }
 
   renderPage('error', { message: 'delete failed', redirect: '/accounts' })(
-    req,
-    res,
+    res.render,
+    req.session,
   )
 })
 
